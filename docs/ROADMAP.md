@@ -18,7 +18,7 @@ updated in the same commit that lands each step.
 | | 0.7 | Container engine — colima (Docker Desktop org-locked) | ✅ |
 | | 0.8 | `PLAN.md` — canonical engineering plan | ✅ |
 | | 0.9 | ADR-0002 — no vector DB in refund path | ✅ |
-| | 0.10 | Docker Compose spine — Postgres + Phoenix (walking skeleton) | ⬜ |
+| | 0.10 | Docker Compose spine — Postgres + Phoenix (walking skeleton) | ✅ |
 | | 0.11 | Terraform skeleton — kind, AKS-ready, *not applied* | ⬜ |
 | | — | **Exit gate:** `docker compose up` healthy · CI green · plan + ADRs committed | ⬜ |
 | **1 · Data + state** | 1.1 | Synthetic fixtures — bookings + refund policies | ⬜ |
@@ -61,7 +61,9 @@ warehouse, built ahead of the deferred Compose spine (0.10/0.11) since it didn't
   the duplicate `RG025` version-collision case renumbered to `RG026`. Contract green (3 passed). ADR-0003
   records the decision.
 
-Active next: **0.10 → 0.11** to close the Phase 0 gate (Compose spine + Terraform skeleton).
+The Compose spine is up — Postgres + Phoenix both `(healthy)` on colima — so the Phase 0 exit-gate
+criteria (`docker compose up` healthy · CI green · plan + ADRs committed) are met. Active next: **0.11**
+(Terraform/OpenTofu skeleton, written AKS-ready, *not applied*) to fully close Phase 0.
 
 **Known backlog (not blocking):** `CANCEL_REFUND` is only 3/25 router rows and `ACCOUNT_SECURITY` is thin
 → the macro-F1 ≥ 0.95 target (PLAN §8) is not yet statistically supportable; the ~58% `(variant)` padding
