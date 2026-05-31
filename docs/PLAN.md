@@ -58,6 +58,12 @@ and the code-enforced confirmation gate before a state change. If REFUND is safe
 > design**, so the scanner is part of the boundary contract — not because real PII is expected in seed
 > fixtures. Defensive engineering: the boundary doesn't get to assume its inputs are clean.
 
+> *Two data planes, not one.* **Operational state** (bookings, policies, refund decisions) lives in
+> transactional **Postgres** (steps 1–3). The **offline eval seed** (router/retrieval/safety cases,
+> derived from curated CSV seeds in `data/seed/`) is a separate analytics asset, read via SQL from a
+> **DuckDB** warehouse (BigQuery swap-in) and guarded by a Pandera contract at the SQL read boundary
+> (ADR-0003). OLTP vs. OLAP — different jobs, kept apart. No module reads Excel at runtime.
+
 ## 5. The offline↔online flywheel
 
 Production traces (Phoenix) surface real failures → distilled into new golden/adversarial cases
@@ -73,7 +79,8 @@ tracing finds what offline missed. The loop is the product, not any single model
 | Offline eval | **Inspect AI** | First-class eval framework (UK AISI); reproducible scored runs |
 | Adversarial | **PyRIT** | Microsoft red-team framework; structured attack coverage |
 | Tracing | **Phoenix + OTel** | OSS, OpenTelemetry-native; no vendor tracing lock-in |
-| State | **PostgreSQL + Alembic** (SQLAlchemy Core) | Boring, correct, transactional; migrations versioned |
+| State (operational) | **PostgreSQL + Alembic** (SQLAlchemy Core) | Boring, correct, transactional; migrations versioned |
+| Eval-data warehouse | **DuckDB** (local) → **BigQuery** swap-in | Offline eval/analytics seed read via SQL through a port; DuckDB mirrors a BigQuery/dbt stack at $0; the BigQuery adapter drops in unchanged (ADR-0003) |
 | Data validation | **Pandera + Presidio** | Schema contracts + PII detection at the boundary |
 | Local infra | **Docker Compose** (on colima) | One-command spine; engine-agnostic (OCI) |
 | Deploy | **Kubernetes golden path** (portfolio build) | Local kind + Helm + Argo Rollouts to demo canary/rollback; Terraform = AKS-ready skeleton (not applied for the local demo) |
@@ -142,4 +149,5 @@ Acceptance bars, not results. Each is stated with what is measured and over what
 ## 12. Decision records
 
 - **ADR-0001** — Kubernetes deployment golden path (accepted).
-- **ADR-0002** — No vector DB in the refund path (next).
+- **ADR-0002** — No vector DB in the refund path (accepted).
+- **ADR-0003** — Seed eval data is a code-validated warehouse asset; CSV source of truth, DuckDB local / BigQuery swap-in (accepted).

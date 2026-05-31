@@ -22,7 +22,7 @@ updated in the same commit that lands each step.
 | | 0.11 | Terraform skeleton — kind, AKS-ready, *not applied* | ⬜ |
 | | — | **Exit gate:** `docker compose up` healthy · CI green · plan + ADRs committed | ⬜ |
 | **1 · Data + state** | 1.1 | Synthetic fixtures — bookings + refund policies | ⬜ |
-| | 1.2 | Pandera schemas (data contracts at the boundary) | 🔄 |
+| | 1.2 | Pandera schemas (data contracts at the boundary) | ✅ |
 | | 1.3 | Presidio PII scan in the validation step | ⬜ |
 | | 1.4 | Postgres schema + Alembic migrations | ⬜ |
 | | 1.5 | Seed / ingestion script | ⬜ |
@@ -48,18 +48,24 @@ updated in the same commit that lands each step.
 
 ## Where we are
 
-Phase 0 ~82% (9/11); 0.10 (Compose spine) + 0.11 (Terraform skeleton) **deferred, not abandoned** —
-the eval workbook landed, so we interleave **Phase 1.2 (data contract)** ahead of the Compose spine
-because validating the data doesn't depend on Postgres/Phoenix being up. Active: **1.2** (Pandera data
-contract on the seed workbook) → back to **0.10 → 0.11** to close the Phase 0 gate.
+**Phase 1.2 done.** The data-contract-at-the-boundary pattern shipped as a production-shaped eval-seed
+warehouse, built ahead of the deferred Compose spine (0.10/0.11) since it didn't need Postgres/Phoenix up:
 
-**Data asset on hand:** `data/raw/viator_seed_v1.xlsx` — sha256-pinned (`.sha256` sidecar), vendored,
-**never loaded at runtime**. 9 sheets (Taxonomy + 5 eval sheets: Router, Tool_Plans, Response_Quality,
-Retrieval_Grounding, Safety_Security + Coverage/Sources). Treated as an **authoring surface**, not the
-source of truth — a Pandera contract guards the boundary (1.2). Verified defects the contract must catch:
-`PAYMENT_BILLING` used in Router but undefined in Taxonomy (referential break); `RG025` is a duplicate
-`case_id`; `CANCEL_REFUND` (the v2 slice) is only 3/25 router rows. ADR-0003 (dataset scope + provenance)
-pending.
+- **Source of truth = versioned CSV seeds** (`data/seed/*.csv`), diffable and code-reviewed. The xlsx is
+  demoted to a sha-pinned, one-time import artifact (`scripts/seed_from_xlsx.py` regenerates the CSVs);
+  **no module reads Excel at runtime.**
+- **Read boundary = SQL through a port** — DuckDB locally (in-process, BigQuery-shaped), BigQuery the
+  documented swap-in behind `WarehouseSource`. Ingestion lands CSV → DuckDB via native `read_csv`.
+- **Pandera contract validates the SQL result set**, not the spreadsheet — drift fails in CI.
+- **Both verified defects fixed at source:** `PAYMENT_BILLING` added to the Taxonomy as a real intent;
+  the duplicate `RG025` version-collision case renumbered to `RG026`. Contract green (3 passed). ADR-0003
+  records the decision.
+
+Active next: **0.10 → 0.11** to close the Phase 0 gate (Compose spine + Terraform skeleton).
+
+**Known backlog (not blocking):** `CANCEL_REFUND` is only 3/25 router rows and `ACCOUNT_SECURITY` is thin
+→ the macro-F1 ≥ 0.95 target (PLAN §8) is not yet statistically supportable; the ~58% `(variant)` padding
+in `4_Retrieval_Grounding` (RG011–RG024) still needs de-duplication. Both tracked for the Phase 3 eval build.
 
 ## Maintenance
 

@@ -1,0 +1,29 @@
+Category,Value,Definition,Default source of truth,Default action,Escalation trigger
+Intent,CANCEL_REFUND,"Cancellation, refund amount, cancellation policy, bad-weather refund",Booking state + cancellation policy + refund quote API + disruption events,Quote refund; require confirmation before cancellation,"Dispute, post-experience complaint, no quote, ambiguous weather cause"
+Intent,TICKETS_CONFIRMATION,"Ticket, voucher, confirmation email, QR code",Booking/voucher service,Resend or display approved ticket info,Voucher missing close to departure or auth failure
+Intent,MEETING_POINT_PICKUP,"Meeting point, pickup time, pickup location, arrival instructions",Booking record + product logistics fields + supplier notes,Summarize exact logistics,Conflicting/missing pickup details near start time
+Intent,MODIFY_BOOKING,Change date/time/traveler count/pickup/traveler details,Booking rules + live availability + pricing API,Offer eligible options and price delta,"Supplier approval required, unavailable inventory, policy conflict"
+Intent,AGE_TIER_ELIGIBILITY,"Child, infant, senior, student, or accessibility eligibility",Structured age-tier/pricing rules,Answer from structured tier first,Text conflicts with structured rule or customer wants bypass
+Intent,INCLUSION_EXCLUSION,"What is included, excluded, multi-pass validity, equipment, food, transport",Structured option fields + product inclusions/exclusions + supplier notes,Explain included/excluded items with caveat,Post-purchase mismatch/dispute
+Intent,ACCOUNT_SECURITY,"Access to account, email change, unauthorized request",Auth/session state + account policy,Verify identity before disclosing or changing,Third-party request or suspicious behavior
+Intent,COMPLAINT_ESCALATION,"Missed tour, no-show dispute, operator issue, service quality complaint",Booking/case history + operator events,Create case; do not promise compensation,"Refund demand, safety issue, evidence conflict"
+Intent,ACCESSIBILITY,"Wheelchair, mobility, service animal, special assistance",Product accessibility fields + supplier notes,Answer carefully and offer operator confirmation,Ambiguous accessibility or safety-critical accommodation
+Intent,SAFETY_INCIDENT,"Medical, safety, lost traveler, immediate operational issue",Booking + operator contact + emergency support SOP,Provide safe next steps and escalate,Any urgent safety situation
+Intent,PAYMENT_BILLING,"Payment, billing, duplicate charge, refund-to-card, or amount/currency dispute",Payment/transaction records + booking state + billing policy,"Verify the charge against transaction records; explain or open a billing case; never move money automatically","Confirmed duplicate or incorrect charge, chargeback, or fraud signal"
+Risk,Low,Lookup or explanation; no money/change/security risk,Risk policy,Gate or escalate as needed,Critical always escalates or blocks unsafe action
+Risk,Medium,Could affect trip outcome or eligibility,Risk policy,Gate or escalate as needed,Critical always escalates or blocks unsafe action
+Risk,High,"Money, booking modification, dispute, or customer harm risk",Risk policy,Gate or escalate as needed,Critical always escalates or blocks unsafe action
+Risk,Critical,"Security/privacy breach, fraud, threat, safety incident",Risk policy,Gate or escalate as needed,Critical always escalates or blocks unsafe action
+Edge case tag,coverage,Coverage label used across datasets,Dataset labels,Use for stratified eval,Investigate if pass rate below target
+Edge case tag,bias,Coverage label used across datasets,Dataset labels,Use for stratified eval,Investigate if pass rate below target
+Edge case tag,quality,Coverage label used across datasets,Dataset labels,Use for stratified eval,Investigate if pass rate below target
+Edge case tag,adversarial_safety,Coverage label used across datasets,Dataset labels,Use for stratified eval,Investigate if pass rate below target
+Edge case tag,security,Coverage label used across datasets,Dataset labels,Use for stratified eval,Investigate if pass rate below target
+Edge case tag,privacy,Coverage label used across datasets,Dataset labels,Use for stratified eval,Investigate if pass rate below target
+Edge case tag,retrieval_conflict,Coverage label used across datasets,Dataset labels,Use for stratified eval,Investigate if pass rate below target
+Edge case tag,compound_intent,Coverage label used across datasets,Dataset labels,Use for stratified eval,Investigate if pass rate below target
+Edge case tag,multi_pass,Coverage label used across datasets,Dataset labels,Use for stratified eval,Investigate if pass rate below target
+Edge case tag,weather,Coverage label used across datasets,Dataset labels,Use for stratified eval,Investigate if pass rate below target
+Edge case tag,age_tier,Coverage label used across datasets,Dataset labels,Use for stratified eval,Investigate if pass rate below target
+Edge case tag,pickup,Coverage label used across datasets,Dataset labels,Use for stratified eval,Investigate if pass rate below target
+Edge case tag,post_experience,Coverage label used across datasets,Dataset labels,Use for stratified eval,Investigate if pass rate below target
