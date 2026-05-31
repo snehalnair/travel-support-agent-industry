@@ -1,0 +1,45 @@
+# Local production spine (walking skeleton): operational state + LLM trace sink.
+# Engine-agnostic (OCI) — runs on colima. Secrets come from .env (gitignored).
+name: tsa
+
+services:
+  # Operational state store (OLTP). Phase 1.4 adds schema + Alembic migrations.
+  postgres:
+    image: postgres:17
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-tsa}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD in .env}
+      POSTGRES_DB: ${POSTGRES_DB:-tsa}
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-tsa} -d ${POSTGRES_DB:-tsa}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
+
+  # LLM observability (traces, eval examples). OTel-native; not for service metrics.
+  phoenix:
+    image: arizephoenix/phoenix:latest
+    restart: unless-stopped
+    environment:
+      PHOENIX_WORKING_DIR: /mnt/data
+    ports:
+      - "${PHOENIX_PORT:-6006}:6006"            # UI + HTTP OTLP collector
+      - "${PHOENIX_OTLP_GRPC_PORT:-4317}:4317"  # OTLP gRPC collector
+    volumes:
+      - phoenix_data:/mnt/data
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:6006')"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 30s
+
+volumes:
+  pgdata:
+  phoenix_data:
