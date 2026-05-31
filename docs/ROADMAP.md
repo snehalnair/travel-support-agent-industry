@@ -23,7 +23,7 @@ updated in the same commit that lands each step.
 | | — | **Exit gate:** `docker compose up` healthy · CI green · plan + ADRs committed | ✅ |
 | **1 · Data + state** | 1.1 | Synthetic fixtures — bookings + refund policies | ✅ |
 | | 1.2 | Pandera schemas (data contracts at the boundary) | ✅ |
-| | 1.3 | Presidio PII scan in the validation step | ⬜ |
+| | 1.3 | Presidio PII scan in the validation step | ✅ |
 | | 1.4 | Postgres schema + Alembic migrations | ⬜ |
 | | 1.5 | Seed / ingestion script | ⬜ |
 | | — | **Exit gate:** seeded DB + validation passing in CI | ⬜ |
@@ -75,7 +75,14 @@ warehouse. A referential-integrity test (`tests/test_operational_fixtures.py`, 1
 Postgres FK/CHECK constraints until the schema lands in 1.4, and grounds the RG026 v6/v7 policy collision
 in a real booking (BK0001 pinned to legacy v6). Money stored as integer minor units; tiers in long format.
 
-Active next: **1.3** (Presidio PII scan at the boundary), then **1.4** Postgres schema + Alembic, **1.5** seed.
+**Phase 1.3 done.** Presidio scanner (`src/tsa/data/pii.py`) wraps `AnalyzerEngine` (en_core_web_sm,
+URL-pinned in `uv.lock`) into a boundary check for contact/financial PII. Contract-tested: detects planted
+email/card (teeth) and asserts the 51 synthetic `customer_query` rows are PII-clean. Reused by the Phase 2.3
+safety gate. Build-vs-use: *use* Presidio for commodity PII detection, but configure it to our threat model
+(small model, focused entity set, explicit threshold) and teeth-test the borrowed behavior.
+
+Active next: **1.4** (Postgres schema + Alembic) — the operational OLTP plane. The Python FK/CHECK
+stand-ins from 1.1 become real database constraints, plus the append-only refund-decision ledger.
 
 **Known backlog (not blocking):** `CANCEL_REFUND` is only 3/25 router rows and `ACCOUNT_SECURITY` is thin
 → the macro-F1 ≥ 0.95 target (PLAN §8) is not yet statistically supportable; the ~58% `(variant)` padding
