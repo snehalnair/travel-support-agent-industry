@@ -21,7 +21,7 @@ updated in the same commit that lands each step.
 | | 0.10 | Docker Compose spine — Postgres + Phoenix (walking skeleton) | ✅ |
 | | 0.11 | OpenTofu skeleton — kind, AKS-ready, *not applied* | ✅ |
 | | — | **Exit gate:** `docker compose up` healthy · CI green · plan + ADRs committed | ✅ |
-| **1 · Data + state** | 1.1 | Synthetic fixtures — bookings + refund policies | ⬜ |
+| **1 · Data + state** | 1.1 | Synthetic fixtures — bookings + refund policies | ✅ |
 | | 1.2 | Pandera schemas (data contracts at the boundary) | ✅ |
 | | 1.3 | Presidio PII scan in the validation step | ⬜ |
 | | 1.4 | Postgres schema + Alembic migrations | ⬜ |
@@ -69,8 +69,13 @@ the Phase 0 exit-gate criteria (`docker compose up` healthy · CI green · plan 
   the duplicate `RG025` version-collision case renumbered to `RG026`. Contract green (3 passed). ADR-0003
   records the decision.
 
-Active next: **Phase 1** proper — start with **1.1** (synthetic operational fixtures: bookings + refund
-policies) feeding the Postgres data plane, then **1.3** Presidio PII scan, **1.4** schema + Alembic, **1.5** seed.
+**Phase 1.1 done.** The operational (OLTP) plane shipped as referentially-consistent CSV seeds in
+`data/fixtures/` (7 bookings, 6 refund-policy versions, 11 tiers) — kept distinct from the eval-seed
+warehouse. A referential-integrity test (`tests/test_operational_fixtures.py`, 10 checks) stands in for the
+Postgres FK/CHECK constraints until the schema lands in 1.4, and grounds the RG026 v6/v7 policy collision
+in a real booking (BK0001 pinned to legacy v6). Money stored as integer minor units; tiers in long format.
+
+Active next: **1.3** (Presidio PII scan at the boundary), then **1.4** Postgres schema + Alembic, **1.5** seed.
 
 **Known backlog (not blocking):** `CANCEL_REFUND` is only 3/25 router rows and `ACCOUNT_SECURITY` is thin
 → the macro-F1 ≥ 0.95 target (PLAN §8) is not yet statistically supportable; the ~58% `(variant)` padding

@@ -11,6 +11,9 @@ __pycache__/
 # Secrets / local env
 .env
 
+# macOS
+.DS_Store
+
 # Terraform / OpenTofu
 # Ignore the plugin cache, state, and crash logs. Keep .terraform.lock.hcl —
 # it pins exact provider versions/checksums and is meant to be committed.
