@@ -10,3 +10,21 @@ __pycache__/
 
 # Secrets / local env
 .env
+
+# Terraform / OpenTofu
+# Ignore the plugin cache, state, and crash logs. Keep .terraform.lock.hcl —
+# it pins exact provider versions/checksums and is meant to be committed.
+**/.terraform/*
+*.tfstate
+*.tfstate.*
+crash.log
+crash.*.log
+# *.tfvars may hold secrets; commit *.tfvars.example instead.
+*.tfvars
+*.tfvars.json
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
+.terraformrc
+terraform.rc
