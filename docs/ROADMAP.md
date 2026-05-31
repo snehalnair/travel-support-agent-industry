@@ -16,7 +16,7 @@ updated in the same commit that lands each step.
 | | 0.5 | CI pipeline — GitHub Actions, 3 parallel jobs, green | ✅ |
 | | 0.6 | pre-commit hooks + `.editorconfig` | ✅ |
 | | 0.7 | Container engine — colima (Docker Desktop org-locked) | ✅ |
-| | 0.8 | `PLAN.md` — canonical engineering plan | 🔄 |
+| | 0.8 | `PLAN.md` — canonical engineering plan | ✅ |
 | | 0.9 | ADR-0002 — no vector DB in refund path | ⬜ |
 | | 0.10 | Docker Compose spine — Postgres + Phoenix (walking skeleton) | ⬜ |
 | | 0.11 | Terraform skeleton — kind, AKS-ready, *not applied* | ⬜ |
@@ -48,8 +48,8 @@ updated in the same commit that lands each step.
 
 ## Where we are
 
-Phase 0 ~64% (7/11). The only step *blocking* the Phase 0 exit gate is the Compose spine (0.10),
-now unblocked by colima. Active: **0.8** (commit `PLAN.md`) → **0.9** (ADR-0002) → **0.10** (Compose).
+Phase 0 ~73% (8/11). The only step *blocking* the Phase 0 exit gate is the Compose spine (0.10),
+now unblocked by colima. Active: **0.9** (ADR-0002) → **0.10** (Compose) → **0.11** (Terraform skeleton).
 
 ## Maintenance
 
