@@ -22,7 +22,7 @@ updated in the same commit that lands each step.
 | | 0.11 | Terraform skeleton — kind, AKS-ready, *not applied* | ⬜ |
 | | — | **Exit gate:** `docker compose up` healthy · CI green · plan + ADRs committed | ⬜ |
 | **1 · Data + state** | 1.1 | Synthetic fixtures — bookings + refund policies | ⬜ |
-| | 1.2 | Pandera schemas (data contracts at the boundary) | ⬜ |
+| | 1.2 | Pandera schemas (data contracts at the boundary) | 🔄 |
 | | 1.3 | Presidio PII scan in the validation step | ⬜ |
 | | 1.4 | Postgres schema + Alembic migrations | ⬜ |
 | | 1.5 | Seed / ingestion script | ⬜ |
@@ -48,12 +48,18 @@ updated in the same commit that lands each step.
 
 ## Where we are
 
-Phase 0 ~82% (9/11). The only step *blocking* the Phase 0 exit gate is the Compose spine (0.10),
-now unblocked by colima. Active: **0.10** (Compose spine) → **0.11** (Terraform skeleton).
+Phase 0 ~82% (9/11); 0.10 (Compose spine) + 0.11 (Terraform skeleton) **deferred, not abandoned** —
+the eval workbook landed, so we interleave **Phase 1.2 (data contract)** ahead of the Compose spine
+because validating the data doesn't depend on Postgres/Phoenix being up. Active: **1.2** (Pandera data
+contract on the seed workbook) → back to **0.10 → 0.11** to close the Phase 0 gate.
 
-**Data asset on hand:** `viator_agent_5_industry_datasets_updated.xlsx` (5 eval sheets: Router,
-Tool_Plans, Response_Quality, Retrieval_Grounding, Safety_Security) — feeds Phase 1 fixtures (1.1–1.2)
-and Phase 3 eval (3.1–3.3). To be vendored + transformed into typed fixtures; not loaded at runtime.
+**Data asset on hand:** `data/raw/viator_seed_v1.xlsx` — sha256-pinned (`.sha256` sidecar), vendored,
+**never loaded at runtime**. 9 sheets (Taxonomy + 5 eval sheets: Router, Tool_Plans, Response_Quality,
+Retrieval_Grounding, Safety_Security + Coverage/Sources). Treated as an **authoring surface**, not the
+source of truth — a Pandera contract guards the boundary (1.2). Verified defects the contract must catch:
+`PAYMENT_BILLING` used in Router but undefined in Taxonomy (referential break); `RG025` is a duplicate
+`case_id`; `CANCEL_REFUND` (the v2 slice) is only 3/25 router rows. ADR-0003 (dataset scope + provenance)
+pending.
 
 ## Maintenance
 
