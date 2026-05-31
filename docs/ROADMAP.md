@@ -17,7 +17,7 @@ updated in the same commit that lands each step.
 | | 0.6 | pre-commit hooks + `.editorconfig` | ✅ |
 | | 0.7 | Container engine — colima (Docker Desktop org-locked) | ✅ |
 | | 0.8 | `PLAN.md` — canonical engineering plan | ✅ |
-| | 0.9 | ADR-0002 — no vector DB in refund path | ⬜ |
+| | 0.9 | ADR-0002 — no vector DB in refund path | ✅ |
 | | 0.10 | Docker Compose spine — Postgres + Phoenix (walking skeleton) | ⬜ |
 | | 0.11 | Terraform skeleton — kind, AKS-ready, *not applied* | ⬜ |
 | | — | **Exit gate:** `docker compose up` healthy · CI green · plan + ADRs committed | ⬜ |
@@ -48,8 +48,12 @@ updated in the same commit that lands each step.
 
 ## Where we are
 
-Phase 0 ~73% (8/11). The only step *blocking* the Phase 0 exit gate is the Compose spine (0.10),
-now unblocked by colima. Active: **0.9** (ADR-0002) → **0.10** (Compose) → **0.11** (Terraform skeleton).
+Phase 0 ~82% (9/11). The only step *blocking* the Phase 0 exit gate is the Compose spine (0.10),
+now unblocked by colima. Active: **0.10** (Compose spine) → **0.11** (Terraform skeleton).
+
+**Data asset on hand:** `viator_agent_5_industry_datasets_updated.xlsx` (5 eval sheets: Router,
+Tool_Plans, Response_Quality, Retrieval_Grounding, Safety_Security) — feeds Phase 1 fixtures (1.1–1.2)
+and Phase 3 eval (3.1–3.3). To be vendored + transformed into typed fixtures; not loaded at runtime.
 
 ## Maintenance
 
