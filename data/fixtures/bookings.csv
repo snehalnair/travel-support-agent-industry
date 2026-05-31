@@ -1,0 +1,8 @@
+booking_id,customer_id,product_family,option_name,status,amount_paid_minor,currency,purchase_ts,start_ts,traveler_count,pinned_policy_id,pinned_policy_version,supplier_timezone
+BK0001,CUST001,Rome Colosseum guided tour,Skip-the-line guided,CONFIRMED,12000,EUR,2025-05-01T10:00:00Z,2026-07-01T09:00:00Z,2,POL_COLOSSEUM,v6,Europe/Rome
+BK0002,CUST002,Rome Colosseum guided tour,Skip-the-line guided,CONFIRMED,12000,EUR,2025-07-01T10:00:00Z,2026-08-01T09:00:00Z,2,POL_COLOSSEUM,v7,Europe/Rome
+BK0003,CUST003,Lisbon sunset sailing cruise,Standard sunset cruise,CONFIRMED,8000,EUR,2026-04-10T12:00:00Z,2026-06-20T18:00:00Z,2,POL_LISBON_SAIL,v3,Europe/Lisbon
+BK0004,CUST004,Amsterdam canal cruise,Evening cruise,CONFIRMED,5000,EUR,2026-05-01T09:00:00Z,2026-06-05T20:00:00Z,3,POL_AMSTERDAM_CANAL,v2,Europe/Amsterdam
+BK0005,CUST005,London Eye admission ticket,Timed entry 15:00,CONFIRMED,4500,GBP,2026-05-10T08:00:00Z,2026-06-10T15:00:00Z,2,POL_LONDON_EYE,v4,Europe/London
+BK0006,CUST006,"Stonehenge, Windsor Castle and Bath day trip",Full day,CONFIRMED,18000,GBP,2026-04-10T07:00:00Z,2026-06-15T08:00:00Z,4,POL_STONEHENGE,v5,Europe/London
+BK0007,CUST002,Amsterdam canal cruise,Evening cruise,CANCELLED,5000,EUR,2026-02-01T09:00:00Z,2026-04-01T20:00:00Z,2,POL_AMSTERDAM_CANAL,v2,Europe/Amsterdam

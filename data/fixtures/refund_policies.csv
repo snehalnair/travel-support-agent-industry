@@ -1,0 +1,7 @@
+policy_id,policy_version,product_family,all_sales_final,currency,effective_from,supersedes_version,notes
+POL_COLOSSEUM,v6,Rome Colosseum guided tour,true,EUR,2024-01-01,,Legacy all-sales-final policy
+POL_COLOSSEUM,v7,Rome Colosseum guided tour,false,EUR,2025-06-01,v6,48h flexible refund (supersedes v6)
+POL_LISBON_SAIL,v3,Lisbon sunset sailing cruise,false,EUR,2024-03-01,,Standard tiers; weather disruption handled as operator cancellation
+POL_AMSTERDAM_CANAL,v2,Amsterdam canal cruise,false,EUR,2024-02-01,,Standard tiers
+POL_LONDON_EYE,v4,London Eye admission ticket,false,GBP,2024-01-15,,Timed-entry; standard tiers
+POL_STONEHENGE,v5,"Stonehenge, Windsor Castle and Bath day trip",true,GBP,2024-04-01,,All-sales-final day trip
