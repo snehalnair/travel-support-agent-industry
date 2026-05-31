@@ -8,10 +8,13 @@ authors = [
 ]
 requires-python = ">=3.12"
 dependencies = [
+    "click>=8.4.1",
     "duckdb>=1.5.3",
+    "en-core-web-sm",
     "openpyxl>=3.1.5",
     "pandas>=3.0.3",
     "pandera[pandas]>=0.31.1",
+    "presidio-analyzer>=2.2.362",
 ]
 
 [project.scripts]
@@ -47,3 +50,6 @@ typeCheckingMode = "standard"
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 addopts = "-q"
+
+[tool.uv.sources]
+en-core-web-sm = { url = "https://github.com/explosion/spacy-models/releases/download/en_core_web_sm-3.8.0/en_core_web_sm-3.8.0-py3-none-any.whl" }
