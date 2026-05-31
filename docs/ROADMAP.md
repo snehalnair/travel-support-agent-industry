@@ -19,8 +19,8 @@ updated in the same commit that lands each step.
 | | 0.8 | `PLAN.md` — canonical engineering plan | ✅ |
 | | 0.9 | ADR-0002 — no vector DB in refund path | ✅ |
 | | 0.10 | Docker Compose spine — Postgres + Phoenix (walking skeleton) | ✅ |
-| | 0.11 | Terraform skeleton — kind, AKS-ready, *not applied* | ⬜ |
-| | — | **Exit gate:** `docker compose up` healthy · CI green · plan + ADRs committed | ⬜ |
+| | 0.11 | OpenTofu skeleton — kind, AKS-ready, *not applied* | ✅ |
+| | — | **Exit gate:** `docker compose up` healthy · CI green · plan + ADRs committed | ✅ |
 | **1 · Data + state** | 1.1 | Synthetic fixtures — bookings + refund policies | ⬜ |
 | | 1.2 | Pandera schemas (data contracts at the boundary) | ✅ |
 | | 1.3 | Presidio PII scan in the validation step | ⬜ |
@@ -48,8 +48,16 @@ updated in the same commit that lands each step.
 
 ## Where we are
 
-**Phase 1.2 done.** The data-contract-at-the-boundary pattern shipped as a production-shaped eval-seed
-warehouse, built ahead of the deferred Compose spine (0.10/0.11) since it didn't need Postgres/Phoenix up:
+**Phase 0 closed.** The walking skeleton is up and the infrastructure-as-code seam is in place, so all of
+the Phase 0 exit-gate criteria (`docker compose up` healthy · CI green · plan + ADRs committed) are met:
+
+- **Compose spine** — Postgres + Phoenix both `(healthy)` on colima; healthchecks become K8s probes in Phase 4.
+- **OpenTofu kind skeleton** (`infra/tofu/`) — a local kind cluster behind a single `kubeconfig_path` seam,
+  so the AKS swap-in is a one-file change. **Validated, not applied:** `tofu validate` passes and the
+  provider is locked (`tehcyx/kind 0.11.0`); `tofu apply` is deferred to Phase 4.4 (Argo Rollouts canary).
+  OpenTofu (LF/OSS) chosen over BSL-relicensed Terraform — same OSS-first bias as kind→AKS, DuckDB→BigQuery.
+
+**Phase 1.2 (data contract) also done**, shipped ahead of the spine since it didn't need Postgres/Phoenix up:
 
 - **Source of truth = versioned CSV seeds** (`data/seed/*.csv`), diffable and code-reviewed. The xlsx is
   demoted to a sha-pinned, one-time import artifact (`scripts/seed_from_xlsx.py` regenerates the CSVs);
@@ -61,9 +69,8 @@ warehouse, built ahead of the deferred Compose spine (0.10/0.11) since it didn't
   the duplicate `RG025` version-collision case renumbered to `RG026`. Contract green (3 passed). ADR-0003
   records the decision.
 
-The Compose spine is up — Postgres + Phoenix both `(healthy)` on colima — so the Phase 0 exit-gate
-criteria (`docker compose up` healthy · CI green · plan + ADRs committed) are met. Active next: **0.11**
-(Terraform/OpenTofu skeleton, written AKS-ready, *not applied*) to fully close Phase 0.
+Active next: **Phase 1** proper — start with **1.1** (synthetic operational fixtures: bookings + refund
+policies) feeding the Postgres data plane, then **1.3** Presidio PII scan, **1.4** schema + Alembic, **1.5** seed.
 
 **Known backlog (not blocking):** `CANCEL_REFUND` is only 3/25 router rows and `ACCOUNT_SECURITY` is thin
 → the macro-F1 ≥ 0.95 target (PLAN §8) is not yet statistically supportable; the ~58% `(variant)` padding
